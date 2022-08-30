@@ -1,23 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [idUser, setIdUser] = useState(1);
+  const [user, setUser] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getUser = async () => {
+    setLoading(true);
+
+    try {
+      let response = await axios.get(`https://jsonplaceholder.typicode.com/users/${idUser}`);
+      setUser(response.data);
+      setLoading(false);
+    } catch (e) {
+      console.log(e.message);
+      setLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [idUser]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div className="py-5">
+        <div className="container">
+          <div className="row d-flex justify-content-center">
+            <div className="col-8">
+              <input type="text" className="form-control" name="iduser" value={idUser} onChange={(e) => setIdUser(e.target.value)} />
+              {loading ? (
+                <div>Loading...</div>
+              ) : (
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Website</th>
+                      <th>Phone</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>{user.name}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>{user.website}</td>
+                      <td>{user.phone}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
